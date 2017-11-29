@@ -7,44 +7,54 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 32150 on 2017/11/9.
  */
 
-public class MyAdapter extends BaseAdapter {
+public class MyAdapter extends BaseAdapter implements Filterable{
 
-    ZooInfo[] zooInfo;
+    //ZooInfo[] zooInfo;
+    List<ZooInfo> zooInfo;//有資料的
+    ArrayList<ZooInfo> orgzooInfo;
+    LayoutInflater inflator;
+
     Context context;
 
-    public MyAdapter(Context context, ZooInfo[] zooInfo)  {
+    public MyAdapter(Context context, List<ZooInfo> zooInfo)  {
         this.context = context;
         this.zooInfo = zooInfo;
+        inflator = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        return zooInfo.length;
+        return zooInfo.size();
     }
 
     @Override
-    public Object getItem(int i) {
-        return null;
+    public ZooInfo getItem(int i) {
+        return zooInfo.get(i);
     }
 
     @Override
     public long getItemId(int i) {
-        return 0;
+        return i;
     }
 
     @Override
     public View getView(final int i, View view, ViewGroup viewGroup) {
         ViewHolder holder;
-        LayoutInflater inflator = LayoutInflater.from(context);
+        inflator = LayoutInflater.from(context);
         //if(view == null)    {
-            view = inflator.inflate(R.layout.myitem, null);//解出Layout 解壓器,消耗資源
+            view = inflator.inflate(R.layout.myitem, viewGroup, false);//解出Layout 解壓器,消耗資源
             holder = new ViewHolder();
             holder.loc = (TextView)view.findViewById(R.id.loc);
             holder.city = (TextView)view.findViewById(R.id.city);
@@ -52,16 +62,69 @@ public class MyAdapter extends BaseAdapter {
             holder.speed = (TextView)view.findViewById(R.id.speed);
             view.setTag(holder);//要加,不然listview滑動會當掉
             if(i != 0) {//i=0為欄位名稱
-                holder.loc.setText(zooInfo[i].Address);
-                holder.city.setText(zooInfo[i].CityName);
-                holder.speed.setText(zooInfo[i].limit);
+                holder.loc.setText(zooInfo.get(i).Address);
+                holder.city.setText(zooInfo.get(i).CityName);
+                holder.speed.setText(zooInfo.get(i).limit);
                 holder.speed.setTextColor(Color.parseColor("#CC0000"));
             }
             //Picasso.with(context).load(zooInfo[i].E_Pic_URL).into(holder.img);
         //}   else    {
-        //    holder = (ViewHolder) view.getTag();
+            //holder = (ViewHolder) view.getTag();
+
         //}
         return view;
+    }
+
+    @Override
+    public Filter getFilter() {
+        Filter filter= new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                charSequence = charSequence.toString();
+                FilterResults result = new FilterResults();
+                if(orgzooInfo == null){//空資料
+                    synchronized (this){
+                        orgzooInfo = new ArrayList<ZooInfo>(zooInfo);
+                        // orgzooInfo 沒有資料，會複製一份item的過來.
+                    }
+                }
+                if(charSequence != null && charSequence.toString().length()>0){
+                    List<ZooInfo> filteredItem = new ArrayList<ZooInfo>();
+                    for(int i=0;i<orgzooInfo.size();i++){
+                        String title = orgzooInfo.get(i).Address;
+                        if(title.contains(charSequence)){
+                            Log.d("Title", i+":"+title);
+                            filteredItem.add(orgzooInfo.get(i));//address比對到的加進list
+                        }
+                    }
+                    result.count = filteredItem.size();
+                    result.values = filteredItem;
+                }else{
+                    synchronized (this){
+                        List<ZooInfo> list = new ArrayList<ZooInfo>(orgzooInfo);
+                        result.values = list;
+                        result.count = list.size();
+
+                    }
+                }
+                Log.d("Count", ""+result.count);
+                Log.d("result", result.values.toString());
+                return result;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                orgzooInfo = (ArrayList<ZooInfo>)filterResults.values;//裝會變動的資料
+                for(int i=0;i<orgzooInfo.size();i++)
+                    Log.d("Publish", (i+1)+":"+orgzooInfo.get(i).Address);
+                if(filterResults.count>0){
+                    notifyDataSetChanged();
+                }   else{
+                    notifyDataSetInvalidated();
+                }
+            }
+        };
+        return filter;
     }
 
     static class ViewHolder
