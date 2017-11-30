@@ -20,7 +20,6 @@
         android:id="@+id/loc"
         android:layout_width="354dp"
         android:layout_height="20dp"
-        android:text="設置地點："
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="#333333"
         android:textSize="16sp"
@@ -31,7 +30,6 @@
         android:id="@+id/city"
         android:layout_width="65dp"
         android:layout_height="18dp"
-        android:text="縣市："
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/imageView"
@@ -40,8 +38,7 @@
     <TextView
         android:id="@+id/speed"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="speed : km"
+        android:layout_height="17dp"
         app:layout_constraintStart_toEndOf="@+id/city"
         app:layout_constraintTop_toBottomOf="@+id/loc" />
 

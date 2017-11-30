@@ -53,7 +53,7 @@ public class MyAdapter extends BaseAdapter implements Filterable{
     public View getView(final int i, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         inflator = LayoutInflater.from(context);
-        //if(view == null)    {
+        if(view == null)    {
             view = inflator.inflate(R.layout.myitem, viewGroup, false);//解出Layout 解壓器,消耗資源
             holder = new ViewHolder();
             holder.loc = (TextView)view.findViewById(R.id.loc);
@@ -61,17 +61,15 @@ public class MyAdapter extends BaseAdapter implements Filterable{
             holder.img = (ImageView)view.findViewById(R.id.imageView);
             holder.speed = (TextView)view.findViewById(R.id.speed);
             view.setTag(holder);//要加,不然listview滑動會當掉
-            if(i != 0) {//i=0為欄位名稱
-                holder.loc.setText(zooInfo.get(i).Address);
-                holder.city.setText(zooInfo.get(i).CityName);
-                holder.speed.setText(zooInfo.get(i).limit);
-                holder.speed.setTextColor(Color.parseColor("#CC0000"));
-            }
-            //Picasso.with(context).load(zooInfo[i].E_Pic_URL).into(holder.img);
-        //}   else    {
-            //holder = (ViewHolder) view.getTag();
-
-        //}
+            holder.loc.setText(zooInfo.get(i).Address);
+            holder.city.setText(zooInfo.get(i).CityName);
+            holder.speed.setText(zooInfo.get(i).limit);
+            holder.speed.setTextColor(Color.parseColor("#CC0000"));
+        }
+//        else    {
+//            holder = (ViewHolder) view.getTag();
+//
+//        }
         return view;
     }
 
@@ -104,7 +102,6 @@ public class MyAdapter extends BaseAdapter implements Filterable{
                         List<ZooInfo> list = new ArrayList<ZooInfo>(orgzooInfo);
                         result.values = list;
                         result.count = list.size();
-
                     }
                 }
                 Log.d("Count", ""+result.count);
@@ -114,9 +111,9 @@ public class MyAdapter extends BaseAdapter implements Filterable{
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                orgzooInfo = (ArrayList<ZooInfo>)filterResults.values;//裝會變動的資料
-                for(int i=0;i<orgzooInfo.size();i++)
-                    Log.d("Publish", (i+1)+":"+orgzooInfo.get(i).Address);
+                zooInfo = (ArrayList<ZooInfo>)filterResults.values;//裝會變動的資料
+                for(int i=0;i<zooInfo.size();i++)
+                    Log.d("Publish", (i+1)+":"+zooInfo.get(i).Address);
                 if(filterResults.count>0){
                     notifyDataSetChanged();
                 }   else{

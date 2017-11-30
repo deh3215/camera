@@ -38,13 +38,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //iv=(ImageView)findViewById(R.id.imageView);
         lv = (ListView) findViewById(R.id.listView);
         searchView = (SearchView)findViewById(R.id.searchView);
         searchView.setIconifiedByDefault(false);// 關閉icon切換
         searchView.setFocusable(false); // 不要進畫面就跳出輸入鍵盤
         searchView.setQueryHint("輸入搜尋地址");
-        setSearch_function();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
 
         RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
         StringRequest request = new StringRequest("http://od.moi.gov.tw/api/v1/rest/datastore/A01010000C-000674-011",
@@ -53,13 +63,10 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         Gson gson = new Gson();
                         z = gson.fromJson(response, Zoo.class);
-                        //count = z.result.count;
-                        //Log.d("ZOO", z.result.results[0].E_Name);
                         adapter = new MyAdapter(MainActivity.this, z.result.records);
+                        adapter.zooInfo.remove(0);
+                        adapter.notifyDataSetChanged();
                         lv.setAdapter(adapter);
-//                        for(int i=0; i<count; i++)  {
-//                            //Picasso.with(MainActivity.this).load(z.result.results[0].E_Pic_URL).into(iv);
-//                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -82,22 +89,6 @@ public class MainActivity extends AppCompatActivity {
 //            startActivity(intent);
         }
     };
-
-    private void setSearch_function() {
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                Log.d("NewText", newText);
-                adapter.getFilter().filter(newText);
-                return true;
-            }
-        });
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
