@@ -39,10 +39,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lv = (ListView) findViewById(R.id.listView);
+        lv.setTextFilterEnabled(true);
         searchView = (SearchView)findViewById(R.id.searchView);
         searchView.setIconifiedByDefault(false);// 關閉icon切換
         searchView.setFocusable(false); // 不要進畫面就跳出輸入鍵盤
         searchView.setQueryHint("輸入搜尋地址");
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -69,10 +71,10 @@ public class MainActivity extends AppCompatActivity {
                         lv.setAdapter(adapter);
                     }
                 }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("ZOO", "Error:" + error.toString());
-            }
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("ZOO", "Error:" + error.toString());
+                    }
         });
         queue.add(request);
         queue.start();
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
 //            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 //            intent.setData(uri);
 //            startActivity(intent);
+//            Toast.makeText(MainActivity.this, ""+i,Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -94,14 +97,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action, menu);
-//        //增加search功能
-//        SearchManager sm = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        SearchView searchView = (SearchView) menu.findItem(R.id.search_bar).getActionView();
-//        searchView.setSearchableInfo(sm.getSearchableInfo(getComponentName()));
-        //searchView.setOnQueryTextListener(queryListener);
-
         return super.onCreateOptionsMenu(menu);
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -113,4 +112,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

@@ -36,10 +36,26 @@
         app:layout_constraintTop_toBottomOf="@+id/loc" />
 
     <TextView
-        android:id="@+id/speed"
+        android:id="@+id/limit"
         android:layout_width="wrap_content"
         android:layout_height="17dp"
         app:layout_constraintStart_toEndOf="@+id/city"
+        app:layout_constraintTop_toBottomOf="@+id/loc" />
+
+    <TextView
+        android:id="@+id/longtitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        app:layout_constraintStart_toEndOf="@+id/limit"
+        app:layout_constraintTop_toBottomOf="@+id/loc" />
+
+    <TextView
+        android:id="@+id/latitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        app:layout_constraintStart_toEndOf="@+id/longtitude"
         app:layout_constraintTop_toBottomOf="@+id/loc" />
 
 </android.support.constraint.ConstraintLayout>

@@ -53,22 +53,32 @@ public class MyAdapter extends BaseAdapter implements Filterable{
     public View getView(final int i, View view, ViewGroup viewGroup) {
         ViewHolder holder;
         inflator = LayoutInflater.from(context);
-        if(view == null)    {
+        //if(view == null)    {
             view = inflator.inflate(R.layout.myitem, viewGroup, false);//解出Layout 解壓器,消耗資源
             holder = new ViewHolder();
             holder.loc = (TextView)view.findViewById(R.id.loc);
             holder.city = (TextView)view.findViewById(R.id.city);
             holder.img = (ImageView)view.findViewById(R.id.imageView);
-            holder.speed = (TextView)view.findViewById(R.id.speed);
+            holder.limit = (TextView)view.findViewById(R.id.limit);
+            holder.coordinate = (TextView)view.findViewById(R.id.longtitude);
+            //holder.longtitude = (TextView)view.findViewById(R.id.longtitude);
+            //holder.latitude = (TextView)view.findViewById(R.id.latitude);
             view.setTag(holder);//要加,不然listview滑動會當掉
             holder.loc.setText(zooInfo.get(i).Address);
             holder.city.setText(zooInfo.get(i).CityName);
-            holder.speed.setText(zooInfo.get(i).limit);
-            holder.speed.setTextColor(Color.parseColor("#CC0000"));
-        }
+            holder.limit.setText(zooInfo.get(i).limit);
+            holder.limit.setTextColor(Color.parseColor("#CC0000"));
+            String lon=zooInfo.get(i).Longitude.replace(".", "°");
+            lon=lon.concat("′E");
+            String lat=zooInfo.get(i).Latitude.replace(".", "°");
+            lat=lat.concat("′N");
+            holder.coordinate.setText("("+lon+" , "+lat+")");
+            holder.coordinate.setTextColor(Color.parseColor("#00AA00"));
+            //holder.longtitude.setText(zooInfo.get(i).Longitude);
+            //holder.latitude.setText(zooInfo.get(i).Latitude);
+        //}
 //        else    {
 //            holder = (ViewHolder) view.getTag();
-//
 //        }
         return view;
     }
@@ -89,9 +99,11 @@ public class MyAdapter extends BaseAdapter implements Filterable{
                 if(charSequence != null && charSequence.toString().length()>0){
                     List<ZooInfo> filteredItem = new ArrayList<ZooInfo>();
                     for(int i=0;i<orgzooInfo.size();i++){
-                        String title = orgzooInfo.get(i).Address;
+                        String title = orgzooInfo.get(i).Address+" "+orgzooInfo.get(i).CityName+" "+
+                                orgzooInfo.get(i).limit;
                         if(title.contains(charSequence)){
-                            Log.d("Title", i+":"+title);
+                            //Log.d("Title", i+":"+title);
+                            //Log.d("charSequence", i+":"+charSequence);
                             filteredItem.add(orgzooInfo.get(i));//address比對到的加進list
                         }
                     }
@@ -111,7 +123,7 @@ public class MyAdapter extends BaseAdapter implements Filterable{
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                zooInfo = (ArrayList<ZooInfo>)filterResults.values;//裝會變動的資料
+                zooInfo = (ArrayList<ZooInfo>)filterResults.values;//裝filter出來的資料
                 for(int i=0;i<zooInfo.size();i++)
                     Log.d("Publish", (i+1)+":"+zooInfo.get(i).Address);
                 if(filterResults.count>0){
@@ -129,7 +141,9 @@ public class MyAdapter extends BaseAdapter implements Filterable{
         TextView loc;
         ImageView img;
         TextView city;
-        TextView speed;
-        //TextView city;
+        TextView limit;
+        TextView coordinate;
+        //TextView longtitude;
+        //TextView latitude;
     }
 }
