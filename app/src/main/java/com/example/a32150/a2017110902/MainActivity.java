@@ -25,19 +25,28 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
 
-    int count;
-    //ImageView iv;
+public class MainActivity extends AppCompatActivity implements MenuItemReceivedListener{
+
     MyAdapter adapter;
     ListView lv;
     Zoo z;
     SearchView searchView;
+//    Set<String> city;
+    Set<String>cityName;
+    int flag=0;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
+
         lv = (ListView) findViewById(R.id.listView);
         lv.setTextFilterEnabled(true);
         searchView = (SearchView)findViewById(R.id.searchView);
@@ -69,6 +78,14 @@ public class MainActivity extends AppCompatActivity {
                         adapter.zooInfo.remove(0);
                         adapter.notifyDataSetChanged();
                         lv.setAdapter(adapter);
+
+
+//                        Iterator iterator = cityName.iterator();
+//                        while(iterator.hasNext()) {
+//                            Log.d("Data", iterator.next() + " ");
+//                        }
+                        flag=1;
+                        ((MenuItemReceivedListener) context).onItemReceivedEvent();
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -81,26 +98,71 @@ public class MainActivity extends AppCompatActivity {
 
         lv.setOnItemClickListener(listener);
         lv.setTextFilterEnabled(true);
+
+
     }
+
     AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//            Uri uri = Uri.parse(z.result.records[i].E_URL);
-//            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//            intent.setData(uri);
-//            startActivity(intent);
-//            Toast.makeText(MainActivity.this, ""+i,Toast.LENGTH_SHORT).show();
+            String latitude = z.result.records.get(i).Latitude;
+            String longitude = z.result.records.get(i).Longitude;
+            String uri = String.format(Locale.TAIWAN, "geo:%f,%f", Double.valueOf(latitude), Double.valueOf(longitude));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            startActivity(intent);
         }
     };
+
+    public void getItem(Menu menu)  {
+        MenuItem logoutMI;
+            for(String obj : cityName) {
+                Log.d("DATA", obj);
+                logoutMI = menu.add(Menu.NONE,1,1, obj);
+                logoutMI.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                logoutMI.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+            }
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action, menu);
+        Log.d("flag", ""+flag);
+        //if(flag != 0)   {
+//            MenuItem logoutMI;
+//            for(String obj : cityName) {
+//                Log.d("DATA", obj);
+//                logoutMI = menu.add(Menu.NONE,1,1, obj);
+//                logoutMI.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+//                logoutMI.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+//            }
+        //}
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
 
+//        MenuItem logoutMI;
+//            for(String obj : cityName) {
+//                Log.d("DATA", obj);
+//                logoutMI = menu.add(Menu.NONE,1,1, obj);
+//                logoutMI.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+//                logoutMI.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+//            }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onItemReceivedEvent() {
+        //get unique city name
+        cityName = new TreeSet();
+        for(int i=0; i<z.result.records.size();i++)
+            cityName.add(z.result.records.get(i).CityName);
+        for(String obj : cityName)
+            Log.d("DATA", obj);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -109,9 +171,6 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
-
-
 }

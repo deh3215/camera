@@ -21,7 +21,6 @@ import java.util.List;
 
 public class MyAdapter extends BaseAdapter implements Filterable{
 
-    //ZooInfo[] zooInfo;
     List<ZooInfo> zooInfo;//有資料的
     ArrayList<ZooInfo> orgzooInfo;
     LayoutInflater inflator;
@@ -64,7 +63,7 @@ public class MyAdapter extends BaseAdapter implements Filterable{
             //holder.longtitude = (TextView)view.findViewById(R.id.longtitude);
             //holder.latitude = (TextView)view.findViewById(R.id.latitude);
             view.setTag(holder);//要加,不然listview滑動會當掉
-            holder.loc.setText(zooInfo.get(i).Address);
+            holder.loc.setText((i+1)+" : "+zooInfo.get(i).Address);
             holder.city.setText(zooInfo.get(i).CityName);
             holder.limit.setText(zooInfo.get(i).limit);
             holder.limit.setTextColor(Color.parseColor("#CC0000"));
@@ -99,10 +98,12 @@ public class MyAdapter extends BaseAdapter implements Filterable{
                 if(charSequence != null && charSequence.toString().length()>0){
                     List<ZooInfo> filteredItem = new ArrayList<ZooInfo>();
                     for(int i=0;i<orgzooInfo.size();i++){
-                        String title = orgzooInfo.get(i).Address+" "+orgzooInfo.get(i).CityName+" "+
-                                orgzooInfo.get(i).limit;
-                        if(title.contains(charSequence)){
-                            //Log.d("Title", i+":"+title);
+                        String addr=orgzooInfo.get(i).Address;
+                        String city=orgzooInfo.get(i).CityName;
+                        String limit=orgzooInfo.get(i).limit;
+                        String str = addr+" "+city+" "+limit;
+                        if(str.contains(charSequence)){
+                            //Log.d("Str", i+":"+str);
                             //Log.d("charSequence", i+":"+charSequence);
                             filteredItem.add(orgzooInfo.get(i));//address比對到的加進list
                         }
@@ -116,16 +117,16 @@ public class MyAdapter extends BaseAdapter implements Filterable{
                         result.count = list.size();
                     }
                 }
-                Log.d("Count", ""+result.count);
-                Log.d("result", result.values.toString());
+                //Log.d("Count", ""+result.count);
+                //Log.d("result", result.values.toString());
                 return result;
             }
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 zooInfo = (ArrayList<ZooInfo>)filterResults.values;//裝filter出來的資料
-                for(int i=0;i<zooInfo.size();i++)
-                    Log.d("Publish", (i+1)+":"+zooInfo.get(i).Address);
+                //for(int i=0;i<zooInfo.size();i++)
+                    //Log.d("Publish", (i+1)+":"+zooInfo.get(i).Address);
                 if(filterResults.count>0){
                     notifyDataSetChanged();
                 }   else{
