@@ -2,7 +2,6 @@ package com.example.a32150.a2017110902;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,15 +54,17 @@ public class MyAdapter extends BaseAdapter implements Filterable{
         //if(view == null)    {
             view = inflator.inflate(R.layout.myitem, viewGroup, false);//解出Layout 解壓器,消耗資源
             holder = new ViewHolder();
+            holder.index = (TextView)view.findViewById(R.id.index);
             holder.loc = (TextView)view.findViewById(R.id.loc);
             holder.city = (TextView)view.findViewById(R.id.city);
             holder.img = (ImageView)view.findViewById(R.id.imageView);
             holder.limit = (TextView)view.findViewById(R.id.limit);
-            holder.coordinate = (TextView)view.findViewById(R.id.longtitude);
+            holder.coordinate = (TextView)view.findViewById(R.id.longitude);
             //holder.longtitude = (TextView)view.findViewById(R.id.longtitude);
             //holder.latitude = (TextView)view.findViewById(R.id.latitude);
             view.setTag(holder);//要加,不然listview滑動會當掉
-            holder.loc.setText((i+1)+" : "+zooInfo.get(i).Address);
+            holder.index.setText((i+1)+" : ");
+            holder.loc.setText(zooInfo.get(i).Address);
             holder.city.setText(zooInfo.get(i).CityName);
             holder.limit.setText(zooInfo.get(i).limit);
             holder.limit.setTextColor(Color.parseColor("#CC0000"));
@@ -97,16 +98,31 @@ public class MyAdapter extends BaseAdapter implements Filterable{
                 }
                 if(charSequence != null && charSequence.toString().length()>0){
                     List<ZooInfo> filteredItem = new ArrayList<ZooInfo>();
+                    //Set<ZooInfo> t_result = new TreeSet<>();
                     for(int i=0;i<orgzooInfo.size();i++){
+                        int k=0;
                         String addr=orgzooInfo.get(i).Address;
                         String city=orgzooInfo.get(i).CityName;
                         String limit=orgzooInfo.get(i).limit;
                         String str = addr+" "+city+" "+limit;
-                        if(str.contains(charSequence)){
+                        //String[] tokens = charSequence.toString().split(" ");
+
+                        //for(int j=i; j<tokens.length; j++)  {
+                            if(str.contains(charSequence)) {
+                                //if(filteredItem.get(i).Address!=orgzooInfo.get(i).Address &&
+                                  //      filteredItem.get(i).CityName!=orgzooInfo.get(i).CityName &&
+                                    //    filteredItem.get(i).limit!=orgzooInfo.get(i).limit)
+                                filteredItem.add(orgzooInfo.get(i));
+
+                            }
+                        //}
+
+
+                        //if(str.contains(charSequence)){
                             //Log.d("Str", i+":"+str);
                             //Log.d("charSequence", i+":"+charSequence);
-                            filteredItem.add(orgzooInfo.get(i));//address比對到的加進list
-                        }
+                            //filteredItem.add(orgzooInfo.get(i));//address比對到的加進list
+                        //}
                     }
                     result.count = filteredItem.size();
                     result.values = filteredItem;
@@ -144,7 +160,7 @@ public class MyAdapter extends BaseAdapter implements Filterable{
         TextView city;
         TextView limit;
         TextView coordinate;
-        //TextView longtitude;
+        TextView index;
         //TextView latitude;
     }
 }

@@ -31,8 +31,6 @@ public class StartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start);
         context = this;
 
-
-
         iv=(ImageView)findViewById(R.id.imgCar);
         //fadeOutAndHideImage(iv);
         iv.setVisibility(View.VISIBLE);
@@ -70,7 +68,6 @@ public class StartActivity extends AppCompatActivity {
         img.startAnimation(fadeOut);
     }
 
-
     public void scale(final ImageView img) {
         Animation am = new ScaleAnimation(0.0f, 2.0f, 0.0f, 2.0f);
         am.setDuration(2000);
@@ -103,8 +100,6 @@ public class StartActivity extends AppCompatActivity {
         as.addAnimation(fadeIn);
         as.addAnimation(scale);
         as.addAnimation(trans);
-
-
 
         img.startAnimation(as);
         //img.clearAnimation();

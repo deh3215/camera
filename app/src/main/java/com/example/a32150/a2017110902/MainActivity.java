@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements MenuItemReceivedL
         searchView = (SearchView)findViewById(R.id.searchView);
         searchView.setIconifiedByDefault(false);// 關閉icon切換
         searchView.setFocusable(false); // 不要進畫面就跳出輸入鍵盤
-        searchView.setQueryHint("輸入搜尋地址");
+        searchView.setQueryHint("關鍵字搜尋：");
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -78,12 +79,6 @@ public class MainActivity extends AppCompatActivity implements MenuItemReceivedL
                         adapter.zooInfo.remove(0);
                         adapter.notifyDataSetChanged();
                         lv.setAdapter(adapter);
-
-
-//                        Iterator iterator = cityName.iterator();
-//                        while(iterator.hasNext()) {
-//                            Log.d("Data", iterator.next() + " ");
-//                        }
                         flag=1;
                         ((MenuItemReceivedListener) context).onItemReceivedEvent();
                     }
@@ -98,31 +93,37 @@ public class MainActivity extends AppCompatActivity implements MenuItemReceivedL
 
         lv.setOnItemClickListener(listener);
         lv.setTextFilterEnabled(true);
-
-
     }
-
+    //前往google地圖
     AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            String latitude = z.result.records.get(i).Latitude;
-            String longitude = z.result.records.get(i).Longitude;
-            String uri = String.format(Locale.TAIWAN, "geo:%f,%f", Double.valueOf(latitude), Double.valueOf(longitude));
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-            startActivity(intent);
+            String coordinate = ((TextView)view.findViewById(R.id.longitude)).getText().toString();
+            String city = ((TextView)view.findViewById(R.id.city)).getText().toString();
+            String loc = ((TextView)view.findViewById(R.id.loc)).getText().toString();
+            coordinate = coordinate.replace('°', '.');
+            String longitude = coordinate.substring(1,11);
+            String latitude = coordinate.substring(16, 25);
+            Log.d("DATA", "city="+city+",loc="+loc+", longitude="+longitude+", latitude="+latitude);
+            Intent it = new Intent(MainActivity.this, MapsActivity.class);
+            it.putExtra("latitude", latitude);
+            it.putExtra("longitude", longitude);
+            it.putExtra("city", city);
+            it.putExtra("loc", loc);
+            startActivity(it);
         }
     };
 
-    public void getItem(Menu menu)  {
-        MenuItem logoutMI;
-            for(String obj : cityName) {
-                Log.d("DATA", obj);
-                logoutMI = menu.add(Menu.NONE,1,1, obj);
-                logoutMI.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-                logoutMI.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-            }
-
-    }
+//    public void getItem(Menu menu)  {
+//        MenuItem logoutMI;
+//            for(String obj : cityName) {
+//                Log.d("DATA", obj);
+//                logoutMI = menu.add(Menu.NONE,1,1, obj);
+//                logoutMI.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+//                logoutMI.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+//            }
+//
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -156,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements MenuItemReceivedL
 
     @Override
     public void onItemReceivedEvent() {
+        searchView.setVisibility(View.VISIBLE);
         //get unique city name
         cityName = new TreeSet();
         for(int i=0; i<z.result.records.size();i++)

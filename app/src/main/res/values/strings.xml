@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">台灣-省/國道測速照相桿地點</string>
+    <string name="app_name">台灣-測速執法設置點</string>
     <string name="action">排序</string>
     <string name="search">Search</string>
     <string name="longtitude">Longtitude</string>
     <string name="latitude">Latitude</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
