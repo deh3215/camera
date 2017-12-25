@@ -11,6 +11,8 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.a32150.a2017110902.DataClass.ZooInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 

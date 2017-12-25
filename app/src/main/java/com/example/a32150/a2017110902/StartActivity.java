@@ -3,6 +3,7 @@ package com.example.a32150.a2017110902;
 import android.content.Context;
 import android.content.Intent;
 import android.icu.text.AlphabeticIndex;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,18 +36,17 @@ public class StartActivity extends AppCompatActivity {
         //fadeOutAndHideImage(iv);
         iv.setVisibility(View.VISIBLE);
         fadeInAndShowImage(iv);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent it = new Intent(StartActivity.this, MainActivity.class);
+                startActivity(it);
+            }
+        },3000);
         //scale(iv);
     }
 
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        float x=event.getRawX();
-//        float y=event.getRawY();
-//
-//        //Toast.makeText(context, "x座標值:"+x+" , y座標值:"+y,Toast.LENGTH_SHORT).show();
-//        Log.d("Coordinate","x座標值:"+x+" , y座標值:"+y);
-//        return super.onTouchEvent(event);
-//    }
+
 
     private void fadeOutAndHideImage(final ImageView img){
         Animation fadeOut = new AlphaAnimation(1, 0);
